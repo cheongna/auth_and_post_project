@@ -1,0 +1,38 @@
+package com.dohyeon.auth_post.service;
+
+import com.dohyeon.auth_post.dto.UserRequestDto;
+import com.dohyeon.auth_post.dto.UserResponseDto;
+import com.dohyeon.auth_post.entity.User;
+import com.dohyeon.auth_post.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository repository;
+
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        User user = User.builder()
+                .username(userRequestDto.getUsername())
+                .password(userRequestDto.getPassword())
+                .email(userRequestDto.getEmail())
+                .build();
+        user = repository.save(user);
+
+        if (user.getId() == null) {
+            throw new RuntimeException("회원가입 실패. 관리자에게 문의하세요");
+        } else {
+            return new UserResponseDto(user);
+        }
+    }
+
+    public UserResponseDto updateUser(long userId, UserRequestDto userRequestDto) {
+        User user = repository.findById(userId).orElseThrow();
+        user.setUsername(userRequestDto.getUsername());
+        user.setPassword(userRequestDto.getPassword());
+        user.setEmail(userRequestDto.getEmail());
+        user = repository.save(user);
+        return new UserResponseDto(user);
+    }
+}
