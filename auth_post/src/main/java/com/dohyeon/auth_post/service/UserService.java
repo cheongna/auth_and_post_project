@@ -35,4 +35,24 @@ public class UserService {
         user = repository.save(user);
         return new UserResponseDto(user);
     }
+
+    public UserResponseDto deleteUser(long userId) {
+        User user = repository.findById(userId).orElseThrow();
+        repository.deleteById(userId);
+        return new UserResponseDto(user);
+    }
+
+    public UserResponseDto findUserById(long userId) {
+        User user = repository.findById(userId).orElseThrow();
+        return new UserResponseDto(user);
+    }
+
+    public String login(String username, String password) {
+        User user = repository.findByUsername(username);
+        if (user.getPassword().equals(password)) {
+            return "로그인 성공";
+        } else {
+            return "로그인 실패";
+        }
+    }
 }
