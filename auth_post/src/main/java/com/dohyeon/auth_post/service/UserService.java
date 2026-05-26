@@ -1,5 +1,7 @@
 package com.dohyeon.auth_post.service;
 
+import com.dohyeon.auth_post.config.error.CustomException;
+import com.dohyeon.auth_post.config.error.ErrorCode;
 import com.dohyeon.auth_post.dto.UserRequestDto;
 import com.dohyeon.auth_post.dto.UserResponseDto;
 import com.dohyeon.auth_post.entity.User;
@@ -45,7 +47,7 @@ public class UserService {
     }
 
     public UserResponseDto findUserById(long userId) {
-        User user = repository.findById(userId).orElseThrow();
+        User user = repository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return new UserResponseDto(user);
     }
 
