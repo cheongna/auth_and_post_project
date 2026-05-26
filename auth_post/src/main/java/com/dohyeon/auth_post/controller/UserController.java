@@ -33,8 +33,8 @@ public class UserController {
         return userService.findUserById(userId);
     }
 
-    @PostMapping("/login")
-    public String login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto.getUsername(), loginDto.getPassword());
-    }
+//    @PostMapping("/login")
+//    public String login(@RequestBody LoginDto loginDto) {
+//        return userService.login(loginDto.getUsername(), loginDto.getPassword());
+//    }
 }

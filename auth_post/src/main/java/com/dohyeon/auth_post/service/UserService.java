@@ -5,17 +5,19 @@ import com.dohyeon.auth_post.dto.UserResponseDto;
 import com.dohyeon.auth_post.entity.User;
 import com.dohyeon.auth_post.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         User user = User.builder()
                 .username(userRequestDto.getUsername())
-                .password(userRequestDto.getPassword())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
                 .email(userRequestDto.getEmail())
                 .build();
         user = repository.save(user);
