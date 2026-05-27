@@ -1,6 +1,8 @@
-package com.dohyeon.auth_post.config;
+package com.dohyeon.auth_post.config.security;
 
-import com.dohyeon.auth_post.config.security.LoginFilter;
+import com.dohyeon.auth_post.config.security.filter.JWTFilter;
+import com.dohyeon.auth_post.config.security.filter.LoginFilter;
+import com.dohyeon.auth_post.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -44,7 +47,8 @@ public class SecurityConfig {
         );
         http.sessionManagement((session) ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         return http.build();
     }
 }
