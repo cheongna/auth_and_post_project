@@ -1,0 +1,173 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auth Post Board</title>
+  <link rel="stylesheet" href="/css/board.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">AP</div>
+        <div>
+          <h1>Auth Post Board</h1>
+          <p>게시판 API와 인증 흐름을 바로 확인하는 테스트 화면</p>
+        </div>
+      </div>
+      <div class="token-pill" title="현재 브라우저에 저장된 JWT 상태">
+        <span id="tokenDot" class="status-dot"></span>
+        <span id="tokenText" class="token-text">토큰 없음</span>
+        <button id="logoutButton" class="muted-link" type="button">초기화</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="summary-band">
+        <div>
+          <h2>작게 만들고 정확히 테스트합니다.</h2>
+          <p>회원가입, 로그인, 인증 헤더, 게시글 작성과 단건 조회를 한 화면에서 다룹니다. 보안 실험 중에도 요청 결과와 저장된 토큰을 눈으로 확인하기 쉽게 구성했습니다.</p>
+        </div>
+        <div class="metric-row" aria-label="API summary">
+          <div class="metric">
+            <strong>JWT</strong>
+            <span>Authorization 헤더 저장</span>
+          </div>
+          <div class="metric">
+            <strong>POST</strong>
+            <span>게시글 작성 요청</span>
+          </div>
+          <div class="metric">
+            <strong>GET</strong>
+            <span>ID 기반 게시글 조회</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel" aria-labelledby="authTitle">
+        <div class="panel-header">
+          <h2 id="authTitle" class="panel-title">계정</h2>
+        </div>
+        <div class="panel-body">
+          <div id="authNotice" class="notice" role="status"></div>
+          <div class="tabs" role="tablist" aria-label="계정 작업">
+            <button class="tab-button active" type="button" role="tab" aria-selected="true" data-tab="login">로그인</button>
+            <button class="tab-button" type="button" role="tab" aria-selected="false" data-tab="signup">회원가입</button>
+          </div>
+
+          <form id="loginPanel" class="tab-panel active" autocomplete="on">
+            <div class="stack">
+              <div class="field">
+                <label for="loginUsername">아이디</label>
+                <input id="loginUsername" name="username" autocomplete="username" required>
+              </div>
+              <div class="field">
+                <label for="loginPassword">비밀번호</label>
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">로그인</button>
+              <button id="fillLoginButton" class="btn btn-secondary" type="button">가입 정보 사용</button>
+            </div>
+            <p class="helper">로그인은 Spring Security 필터에 맞춰 폼 데이터로 전송합니다.</p>
+          </form>
+
+          <form id="signupPanel" class="tab-panel" autocomplete="on">
+            <div class="stack">
+              <div class="field-row">
+                <div class="field">
+                  <label for="signupUsername">아이디</label>
+                  <input id="signupUsername" name="username" autocomplete="username" required>
+                </div>
+                <div class="field">
+                  <label for="signupEmail">이메일</label>
+                  <input id="signupEmail" name="email" type="email" autocomplete="email" required>
+                </div>
+              </div>
+              <div class="field">
+                <label for="signupPassword">비밀번호</label>
+                <input id="signupPassword" name="password" type="password" autocomplete="new-password" required>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">회원가입</button>
+            </div>
+            <p class="helper">가입 성공 시 반환된 사용자 ID를 게시글 작성 폼에 자동 반영합니다.</p>
+          </form>
+        </div>
+      </section>
+    </section>
+
+    <section class="grid">
+      <section class="panel" aria-labelledby="writeTitle">
+        <div class="panel-header">
+          <h2 id="writeTitle" class="panel-title">게시글 작성</h2>
+        </div>
+        <div class="panel-body">
+          <div id="boardNotice" class="notice" role="status"></div>
+          <form id="postForm">
+            <div class="stack">
+              <div class="field-row">
+                <div class="field">
+                  <label for="userId">작성자 ID</label>
+                  <input id="userId" name="userId" inputmode="numeric" placeholder="예: 1" required>
+                </div>
+                <div class="field">
+                  <label for="lookupId">조회할 게시글 ID</label>
+                  <input id="lookupId" name="lookupId" inputmode="numeric" placeholder="예: 1">
+                </div>
+              </div>
+              <div class="field">
+                <label for="title">제목</label>
+                <input id="title" name="title" maxlength="120" placeholder="게시글 제목" required>
+              </div>
+              <div class="field">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" placeholder="본문을 입력하세요. XSS 테스트 문자열도 안전 미리보기에서 텍스트로 표시됩니다." required></textarea>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">작성</button>
+              <button id="lookupButton" class="btn btn-secondary" type="button">조회</button>
+              <button id="sampleButton" class="btn btn-secondary" type="button">샘플 채우기</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="stack">
+        <section class="panel" aria-labelledby="previewTitle">
+          <div class="panel-header">
+            <h2 id="previewTitle" class="panel-title">안전 미리보기</h2>
+          </div>
+          <div class="panel-body">
+            <article class="board-preview">
+              <h3 id="previewTitleText">게시글을 작성하거나 조회해보세요</h3>
+              <div class="meta-line">
+                <span id="previewPostId" class="chip">post: 대기</span>
+                <span id="previewUserId" class="chip">user: 미지정</span>
+              </div>
+              <div id="previewContent" class="post-content">서버 응답이나 입력 중인 내용이 이곳에 표시됩니다.</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="consoleTitle">
+          <div class="panel-header">
+            <h2 id="consoleTitle" class="panel-title">요청 로그</h2>
+            <button id="clearLogButton" class="btn btn-secondary" type="button">지우기</button>
+          </div>
+          <div class="panel-body">
+            <pre id="console" class="console" aria-live="polite">ready</pre>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="/js/board.js" defer></script>
+</body>
+</html>
+

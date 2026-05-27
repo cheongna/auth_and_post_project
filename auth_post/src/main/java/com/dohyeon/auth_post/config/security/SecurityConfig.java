@@ -41,7 +41,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((auth) ->
                 auth.
-                        requestMatchers("/users/login", "/", "/users/create", "/users/**").permitAll()
+                        requestMatchers("/", "/index.html", "/css/**", "/js/**", "/users/login", "/users/create", "/users/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
         );
